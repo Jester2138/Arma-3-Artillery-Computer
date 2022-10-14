@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -18,6 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
@@ -47,8 +50,8 @@ fun DrawPointTargetUI () {
     val box3width = 0.5F
     val box4width = 1F
     // height settings
-    val buttonHeight = 65.dp
-    val boxHeight = 75.dp
+    val buttonHeight = 50.dp
+    val boxHeight = 60.dp
     val textLineHeight = 30.dp
     // variables
     var mX by rememberSaveable {mutableStateOf ("0")}
@@ -61,6 +64,7 @@ fun DrawPointTargetUI () {
     var tY by rememberSaveable {mutableStateOf ("")}
     var tK by rememberSaveable {mutableStateOf ("")}
     var tE by rememberSaveable {mutableStateOf ("")}
+    var activeIndex by rememberSaveable {mutableStateOf (-1)}
     // draw UI
     BoxWithConstraints (
         Modifier
@@ -87,16 +91,29 @@ fun DrawPointTargetUI () {
                 mY = mapCorr[1]
                 // spacer
                 Spacer(modifier = Modifier.width(8.dp))
-                // help button
+                // timer button
+                TimerButton()
                 Box (
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.TopEnd
                 ) {
+                    // help button
                     HelpButton()
                 }
             }
 
             Log.i("Jesse", "Map Correction Received: ($mX, $mY)")
+
+            // row of gun and map info
+            Row {
+                Text("Gun: " + gunType.name)
+                Box (
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.TopEnd
+                ){
+                    Text("Map Corr: $mX, $mY")
+                }
+            }
 
             // gun input text box
             Row {
@@ -277,31 +294,6 @@ fun DrawPointTargetUI () {
                 }
             }
 
-            // calc/print azimuth
-            /*Row {
-                Box(
-                    Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth(fraction = box1width)
-                        .height(textLineHeight)) {
-                    Text("Azimuth:")
-                }
-                Box(
-                    Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth(fraction = box4width)
-                        .height(textLineHeight))
-                {
-                    val gunGrid = readGrid (gX, gY, gK, mX, mY)
-                    val tgtGrid = readGrid (tX, tY, tK, mX, mY)
-                    // if valid grid inputs
-                    if ( ( gunGrid.count() == 2 ) && ( tgtGrid.count() == 2 ) ) {
-                        azimuth = (getAzimuth (gunGrid, tgtGrid)).toInt()
-                        Text ( "$azimuth mils" )
-                    } else { Text ("") }
-                }
-            }*/
-
             // if valid grind inputs, calculate solutions
             val gunGrid = readGrid (gX, gY, gK, mX, mY)
             val tgtGrid = readGrid (tX, tY, tK, mX, mY)
@@ -351,7 +343,7 @@ fun DrawPointTargetUI () {
                     // sort results
                     val solutionsSorted: List<Solution> = solutions.sortedBy { it.quadElev }
                     // draw data table of results
-                    TableScreen(solutionsSorted)
+                    activeIndex = tableScreen(solutions = solutionsSorted, activeIndex = activeIndex)
                 }
             } else {
                 // print that there are no valid solutions
@@ -362,14 +354,51 @@ fun DrawPointTargetUI () {
 }
 
 @Composable
+fun TimerButton() {
+    MaterialTheme {
+        Column {
+            val openDialog = rememberSaveable {mutableStateOf(false)}
+            Button(
+                onClick = { openDialog.value = true }
+            ) {
+                Text("Timer")
+            }
+            if (openDialog.value) {
+                AlertDialog(
+                    onDismissRequest = { openDialog.value = false },
+                    title = {Text (text = "Timer:")},
+                    text = {
+                        Text (
+                            text = "Test"
+                        )
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                openDialog.value = false
+                            }) {
+                            Text("Close")
+                        }
+                    }
+                )
+            }
+        }
+    }
+    Log.i("Jesse", "Timer button opened.")
+}
+
+@Composable
 fun HelpButton() {
     MaterialTheme {
         Column {
             val openDialog = rememberSaveable {mutableStateOf(false)}
-            Button(onClick = {
-                openDialog.value = true
-            }) {
-                Text("Help")
+            Button(
+                onClick = { openDialog.value = true },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = MaterialTheme.colors.primaryVariant
+                )
+            ) {
+                Text("?")
             }
             if (openDialog.value) {
                 AlertDialog(
@@ -380,7 +409,7 @@ fun HelpButton() {
                             text = "1) Select gun type." +
                                     "\r\n" +
                                     "\r\n" +
-                                    "2) Input MAP CORR. Some maps don't use grid [0,0] as the bottom-left. In this case, find which edge grid [0,0] is located on, and input the X or Y value found on the far end of that axis. For example, on Beketov, the MAP CORR would be [0,062]. Leave empty or [0,0] if the map uses grid [0,0] as the bottom-left." +
+                                    "2) Input map correction. Some maps don't use grid [0,0] as the bottom-left. In this case, find which edge grid [0,0] is located on, and input the X or Y value found on the far end of that axis. For example, on Beketov, the map correction would be [0,062]. Leave empty or [0,0] if the map uses grid [0,0] as the bottom-left." +
                                     "\r\n" +
                                     "\r\n" +
                                     "3) Input gun location." +
@@ -389,7 +418,10 @@ fun HelpButton() {
                                     "4) Input target location." +
                                     "\r\n" +
                                     "\r\n" +
-                                    "5) All possible solutions will be displayed below the inputs."
+                                    "5) All possible solutions will be displayed below the inputs." +
+                                    "\r\n" +
+                                    "\r\n" +
+                                    "6) The timer can be used to track time to impact."
                         )
                     },
                     confirmButton = {
@@ -417,7 +449,7 @@ fun mapCorrPopup(mX: String, mY: String): List<String> {
             Button(onClick = {
                 openDialog.value = true
             }) {
-                Text("Map Corr")
+                Text("Map")
             }
             if (openDialog.value) {
                 AlertDialog(
@@ -543,7 +575,7 @@ fun gunTypeMenu(): Gun {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var selectedIndex by rememberSaveable { mutableStateOf(0) }
     // create menu and button
-    val gunName = gunNames[selectedIndex]
+    //val gunName = gunNames[selectedIndex]
     DropdownMenu(
         expanded = expanded,
         selectedIndex = selectedIndex,
@@ -562,7 +594,7 @@ fun gunTypeMenu(): Gun {
             }
         ) {
             Text(
-                text = gunName,
+                text = "Gun",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -574,21 +606,31 @@ fun gunTypeMenu(): Gun {
 @Composable
 fun RowScope.TableCell(
     text: String,
-    weight: Float
+    weight: Float,
+    color: Color
 ) {
     Text(
         text = text,
         Modifier
             .border(1.dp, MaterialTheme.colors.background)
             .weight(weight)
-            .padding(8.dp)
+            .padding(8.dp),
+        color = color
     )
 }
 
 @Composable
-fun TableScreen(solutions: List<Solution>) {
+fun tableScreen(solutions: List<Solution>, activeIndex: Int): Int {
 
     Log.i("Jesse", "Data Table solutions: " + solutions.count().toString())
+    Log.i("Jesse", "Data Table fed active index: $activeIndex")
+
+    // receive active solution
+    var newActiveIndex by rememberSaveable {mutableStateOf (-1)}
+
+    // set colors
+    val activeColor = Color.Red
+    val inactiveColor = MaterialTheme.colors.onPrimary
 
     // Each cell of a column must have the same weight.
     val columnWeight = .2F
@@ -602,23 +644,19 @@ fun TableScreen(solutions: List<Solution>) {
         // Header
         item {
             Row(Modifier.background(MaterialTheme.colors.background)) {
-                TableCell(text = "Elev", weight = columnWeight)      // column 1
-                TableCell(text = "Charge", weight = columnWeight)    // column 2
-                TableCell(text = "ToF", weight = columnWeight)       // column 3
-                TableCell(text = "Spread", weight = columnWeight)    // column 4
+                TableCell(text = "Elev", weight = columnWeight, color = inactiveColor)      // column 1
+                TableCell(text = "Charge", weight = columnWeight, color = inactiveColor)    // column 2
+                TableCell(text = "ToF", weight = columnWeight, color = inactiveColor)       // column 3
+                TableCell(text = "Spread", weight = columnWeight, color = inactiveColor)    // column 4
             }
         }
 
         // Data
         item {
-/*
-            Divider(
-                thickness = 1.dp,
-                color = MaterialTheme.colors.onPrimary
-            )
-*/
+
             // Iterate through given data creating rows
-            for (solution in solutions) {
+            for ((index, value) in solutions.withIndex()) {
+                Log.i("Jesse", "Data Table active loop index: $index")
                 Divider(
                     thickness = 1.dp,
                     color = MaterialTheme.colors.onBackground
@@ -626,16 +664,38 @@ fun TableScreen(solutions: List<Solution>) {
                 Row(
                     Modifier
                         .fillMaxWidth()
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onTap = {
+                                    Log.i("Jesse", "Data Table tapped row: $index")
+                                    newActiveIndex = index
+                                }
+                            )
+                        }
                 ) {
-                    TableCell(text = solution.quadElev.toString(), weight = columnWeight)   // column 1
-                    TableCell(text = solution.charge.toString(), weight = columnWeight)     // column 2
-                    TableCell(
-                        text = solution.tof.toString(),
-                        weight = columnWeight
+                    TableCell(   // column 1
+                        text = value.quadElev.toString(),
+                        weight = columnWeight,
+                        color = if (activeIndex == index) {activeColor} else {inactiveColor}
                     )
-                    TableCell(text = solution.spread.toString(), weight = columnWeight)     // column 4
+                    TableCell(     // column 2
+                        text = value.charge.toString(),
+                        weight = columnWeight,
+                        color = if (activeIndex == index) {activeColor} else {inactiveColor}
+                    )
+                    TableCell(     // column 3
+                        text = value.tof.toString(),
+                        weight = columnWeight,
+                        color = if (activeIndex == index) {activeColor} else {inactiveColor}
+                    )
+                    TableCell(     // column 4
+                        text = value.spread.toString(),
+                        weight = columnWeight,
+                        color = if (activeIndex == index) {activeColor} else {inactiveColor}
+                    )
                 }
             }
         }
     }
+    return newActiveIndex
 }

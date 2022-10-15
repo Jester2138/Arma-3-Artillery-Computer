@@ -8,23 +8,29 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import com.example.artillerycomputer3.ui.theme.ArtilleryComputer3Theme
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import com.example.artillerycomputer3.ui.theme.ArtilleryComputer3Theme
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +71,7 @@ fun DrawPointTargetUI () {
     var tK by rememberSaveable {mutableStateOf ("")}
     var tE by rememberSaveable {mutableStateOf ("")}
     var activeIndex by rememberSaveable {mutableStateOf (-1)}
+    var activeTTI by rememberSaveable {mutableStateOf (0)}
     // draw UI
     BoxWithConstraints (
         Modifier
@@ -92,7 +99,8 @@ fun DrawPointTargetUI () {
                 // spacer
                 Spacer(modifier = Modifier.width(8.dp))
                 // timer button
-                TimerButton()
+                ShotButton(activeTTI)
+                // rest is justified right
                 Box (
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.TopEnd
@@ -116,6 +124,7 @@ fun DrawPointTargetUI () {
             }
 
             // gun input text box
+            val focusManager = LocalFocusManager.current
             Row {
                 Box(
                     Modifier
@@ -126,10 +135,16 @@ fun DrawPointTargetUI () {
                         value = gX,
                         label = { Text(text = "gX") },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
                         onValueChange = {
                             gX = it
-                        }
+                        },
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Right) }
+                        )
                     )
                 }
                 Box(
@@ -141,10 +156,16 @@ fun DrawPointTargetUI () {
                         value = gY,
                         label = { Text(text = "gY") },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
                         onValueChange = {
                             gY = it
-                        }
+                        },
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Right) }
+                        )
                     )
                 }
                 Box(
@@ -156,10 +177,16 @@ fun DrawPointTargetUI () {
                         value = gK,
                         label = { Text(text = "gK") },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
                         onValueChange = {
                             gK = it
-                        }
+                        },
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Right) }
+                        )
                     )
                 }
                 Box(
@@ -171,10 +198,16 @@ fun DrawPointTargetUI () {
                         value = gE,
                         label = { Text(text = "gE") },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
                         onValueChange = {
                             gE = it
-                        }
+                        },
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusManager.clearFocus() }
+                        )
                     )
                 }
             }
@@ -189,10 +222,16 @@ fun DrawPointTargetUI () {
                         value = tX,
                         label = { Text(text = "tX") },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
                         onValueChange = {
                             tX = it
-                        }
+                        },
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Right) }
+                        )
                     )
                 }
                 Box(
@@ -203,10 +242,16 @@ fun DrawPointTargetUI () {
                         value = tY,
                         label = { Text(text = "tY") },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
                         onValueChange = {
                             tY = it
-                        }
+                        },
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Right) }
+                        )
                     )
                 }
                 Box(
@@ -217,10 +262,16 @@ fun DrawPointTargetUI () {
                         value = tK,
                         label = { Text(text = "tK") },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
                         onValueChange = {
                             tK = it
-                        }
+                        },
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Right) }
+                        )
                     )
                 }
                 Box(
@@ -231,10 +282,16 @@ fun DrawPointTargetUI () {
                         value = tE,
                         label = { Text(text = "tE") },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
                         onValueChange = {
                             tE = it
-                        }
+                        },
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusManager.clearFocus() }
+                        )
                     )
                 }
             }
@@ -244,49 +301,37 @@ fun DrawPointTargetUI () {
                 Box(
                     Modifier
                         .padding(8.dp)
-                        .fillMaxWidth(fraction = .2F)
-                        .height(textLineHeight))
-                {
-                    Text("Azimuth:")
-                }
-                Box(
-                    Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth(fraction = .35F)
-                        .height(textLineHeight))
-                {
+                        .fillMaxWidth(fraction = 0.5F)
+                        .height(textLineHeight)
+                ) {
+                    Log.i("Jesse", "For azimuth, sending grids to readGrid: ($gX, $gY, $gK, $mX, $mY)")
                     val gunGrid = readGrid (gX, gY, gK, mX, mY)
                     val tgtGrid = readGrid (tX, tY, tK, mX, mY)
                     // if valid grid inputs
                     if ( ( gunGrid.count() == 2 ) && ( tgtGrid.count() == 2 ) ) {
+                        Log.i("Jesse", "Valid grid: $gunGrid and $tgtGrid. Getting azimuth...")
                         azimuth = (getAzimuth (gunGrid, tgtGrid)).toInt()
-                        Text ( "$azimuth mils" )
+                        Log.i("Jesse", "Azimuth: $azimuth")
+                        Text ( "Azimuth: $azimuth mils" )
                     } else { Text ("") }
                 }
                 Box(
-                    Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth(fraction = .35F)
-                        .height(textLineHeight))
-                {
-                    Text("Range:")
-                }
-                Box(
-                    Modifier
+                    modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth(fraction = 1F)
-                        .height(textLineHeight))
+                        .height(textLineHeight),
+                    contentAlignment = Alignment.TopEnd
+                )
                 {
-                    Log.i("Jesse", "Sending gun grid to readGrid: ($gX, $gY, $gK, $mX, $mY)")
+                    Log.i("Jesse", "For range, sending grids to readGrid: ($gX, $gY, $gK, $mX, $mY)")
                     val gunGrid = readGrid (gX, gY, gK, mX, mY)
-                    Log.i("Jesse", "Sending tgt grid to readGrid: ($tX, $tY, $tK, $mX, $mY)")
                     val tgtGrid = readGrid (tX, tY, tK, mX, mY)
                     // if valid grid inputs
                     if ( ( gunGrid.count() == 2 ) && ( tgtGrid.count() == 2 ) ) {
                         Log.i("Jesse", "Valid grid: $gunGrid and $tgtGrid. Getting range...")
                         range = (getRange (gunGrid, tgtGrid)).toInt()
                         Log.i("Jesse", "Range: $range")
-                        Text ("$range m")
+                        Text ("Range: $range m")
                     } else {
                         Log.i("Jesse", "Invalid grid.")
                         Text ("")
@@ -294,7 +339,7 @@ fun DrawPointTargetUI () {
                 }
             }
 
-            // if valid grind inputs, calculate solutions
+            // if valid grid inputs, calculate solutions
             val gunGrid = readGrid (gX, gY, gK, mX, mY)
             val tgtGrid = readGrid (tX, tY, tK, mX, mY)
             if ((gunGrid.count()==2) && (tgtGrid.count()==2) && (range > 0)) {
@@ -344,6 +389,8 @@ fun DrawPointTargetUI () {
                     val solutionsSorted: List<Solution> = solutions.sortedBy { it.quadElev }
                     // draw data table of results
                     activeIndex = tableScreen(solutions = solutionsSorted, activeIndex = activeIndex)
+                    // set active TTI
+                    activeTTI = if (activeIndex > -1) {solutionsSorted[activeIndex].tof} else {0}
                 }
             } else {
                 // print that there are no valid solutions
@@ -353,6 +400,32 @@ fun DrawPointTargetUI () {
     }
 }
 
+@OptIn(ExperimentalTime::class)
+@Composable
+fun ShotButton(tti: Int) {
+    var ttiHere by rememberSaveable { mutableStateOf(tti) }
+    val counting = rememberSaveable {mutableStateOf(false)}
+    Button(
+        onClick = { counting.value = !counting.value }
+    ) {
+        Text("TTI: $ttiHere s")
+    }
+    if (counting.value) {
+        LaunchedEffect(Unit) {
+            while ((ttiHere > 0) && counting.value) {
+                delay(1.seconds)
+                ttiHere -= 1
+                Log.i("Jesse", "Timer seconds left: $ttiHere")
+            }
+            counting.value = false
+            ttiHere = tti
+        }
+    } else {
+        ttiHere = tti
+        Log.i("Jesse", "Timer resetting")
+    }
+}
+/*
 @Composable
 fun TimerButton() {
     MaterialTheme {
@@ -386,7 +459,7 @@ fun TimerButton() {
     }
     Log.i("Jesse", "Timer button opened.")
 }
-
+*/
 @Composable
 fun HelpButton() {
     MaterialTheme {
@@ -412,7 +485,7 @@ fun HelpButton() {
                                     "2) Input map correction. Some maps don't use grid [0,0] as the bottom-left. In this case, find which edge grid [0,0] is located on, and input the X or Y value found on the far end of that axis. For example, on Beketov, the map correction would be [0,062]. Leave empty or [0,0] if the map uses grid [0,0] as the bottom-left." +
                                     "\r\n" +
                                     "\r\n" +
-                                    "3) Input gun location." +
+                                    "3) Input gun location. gX/gY are X and Y grids. gK is keypad. gE is terrain elevation." +
                                     "\r\n" +
                                     "\r\n" +
                                     "4) Input target location." +
@@ -421,7 +494,10 @@ fun HelpButton() {
                                     "5) All possible solutions will be displayed below the inputs." +
                                     "\r\n" +
                                     "\r\n" +
-                                    "6) The timer can be used to track time to impact."
+                                    "6) To use TTI (Time To Impact), tap on a solution and the TTI button will show the ToF. Tap the TTI button and it will count down to 0 and then reset. Tap the button mid-count and it will reset." +
+                                    "\r\n" +
+                                    "\r\n" +
+                                    "NOTE: If using a 8 or 10 digit grid format, leave keypad blank or 0."
                         )
                     },
                     confirmButton = {

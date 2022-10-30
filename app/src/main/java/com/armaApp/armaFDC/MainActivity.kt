@@ -30,6 +30,7 @@ import com.armaApp.armaFDC.ui.theme.ArtilleryComputer3Theme
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
+// test comment
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

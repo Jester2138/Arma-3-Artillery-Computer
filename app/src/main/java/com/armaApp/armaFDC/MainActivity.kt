@@ -1,4 +1,4 @@
-package com.example.artillerycomputer3
+package com.armaApp.armaFDC
 
 import android.os.Bundle
 import android.util.Log
@@ -26,10 +26,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.artillerycomputer3.ui.theme.ArtilleryComputer3Theme
+import com.armaApp.armaFDC.ui.theme.ArtilleryComputer3Theme
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
 
 
 class MainActivity : ComponentActivity() {
@@ -400,18 +399,32 @@ fun DrawPointTargetUI () {
     }
 }
 
-@OptIn(ExperimentalTime::class)
 @Composable
 fun ShotButton(tti: Int) {
     var ttiHere by rememberSaveable { mutableStateOf(tti) }
     val counting = rememberSaveable {mutableStateOf(false)}
+    var color = MaterialTheme.colors.onPrimary
+    //val view = LocalView.current
     Button(
-        onClick = { counting.value = !counting.value }
+        onClick = {
+            counting.value = !counting.value
+            Log.i("Jesse", "Timer started...")
+        }
     ) {
-        Text("TTI: $ttiHere s")
+        Text(
+            "TTI: $ttiHere s",
+            modifier = Modifier,
+            color = color
+        )
     }
     if (counting.value) {
         LaunchedEffect(Unit) {
+            Log.i("Jesse", "Changing button color to red.")
+            color = Color.Red
+            // text only seems to change color when the text changes. need a better way...
+            ttiHere += 1
+            ttiHere -= 1
+            // start ticking
             while ((ttiHere > 0) && counting.value) {
                 delay(1.seconds)
                 ttiHere -= 1
@@ -421,6 +434,7 @@ fun ShotButton(tti: Int) {
             ttiHere = tti
         }
     } else {
+        color = MaterialTheme.colors.onPrimary
         ttiHere = tti
         Log.i("Jesse", "Timer resetting")
     }
@@ -706,7 +720,7 @@ fun tableScreen(solutions: List<Solution>, activeIndex: Int): Int {
 
     // set colors
     val activeColor = Color.Red
-    val inactiveColor = MaterialTheme.colors.onPrimary
+    val inactiveColor = MaterialTheme.colors.onBackground
 
     // Each cell of a column must have the same weight.
     val columnWeight = .2F

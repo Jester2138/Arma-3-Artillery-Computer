@@ -1,4 +1,4 @@
-package com.example.artillerycomputer3
+package com.armaApp.armaFDC
 
 import android.util.Log
 import kotlin.math.*

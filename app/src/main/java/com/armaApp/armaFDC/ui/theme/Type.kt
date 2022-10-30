@@ -1,4 +1,4 @@
-package com.example.artillerycomputer3.ui.theme
+package com.armaApp.armaFDC.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

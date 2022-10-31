@@ -717,6 +717,8 @@ fun tableScreen(solutions: List<Solution>, activeIndex: Int): Int {
     Log.i("Jesse", "Data Table fed active index: $activeIndex")
 
     // receive active solution
+    var oldActiveIndex = activeIndex
+    if (activeIndex > (solutions.count() - 1)) {oldActiveIndex = 0}
     var newActiveIndex by rememberSaveable {mutableStateOf (-1)}
 
     // set colors
@@ -767,26 +769,26 @@ fun tableScreen(solutions: List<Solution>, activeIndex: Int): Int {
                     TableCell(   // column 1
                         text = value.quadElev.toString(),
                         weight = columnWeight,
-                        color = if (activeIndex == index) {activeColor} else {inactiveColor}
+                        color = if (oldActiveIndex == index) {activeColor} else {inactiveColor}
                     )
                     TableCell(     // column 2
                         text = value.charge.toString(),
                         weight = columnWeight,
-                        color = if (activeIndex == index) {activeColor} else {inactiveColor}
+                        color = if (oldActiveIndex == index) {activeColor} else {inactiveColor}
                     )
                     TableCell(     // column 3
                         text = value.tof.toString(),
                         weight = columnWeight,
-                        color = if (activeIndex == index) {activeColor} else {inactiveColor}
+                        color = if (oldActiveIndex == index) {activeColor} else {inactiveColor}
                     )
                     TableCell(     // column 4
                         text = value.spread.toString(),
                         weight = columnWeight,
-                        color = if (activeIndex == index) {activeColor} else {inactiveColor}
+                        color = if (oldActiveIndex == index) {activeColor} else {inactiveColor}
                     )
                 }
             }
         }
     }
-    return newActiveIndex
+    return if (newActiveIndex < solutions.count()) {newActiveIndex} else {-1}
 }

@@ -27,7 +27,7 @@ val rhs_d30a = Gun ( // final
 )
 
 val rhs_podnos = Gun ( // final
-    name = "RHS Podnos",
+    name = "RHS 2B14-1 Podnos",
     velocities = listOf (73.8F, 147.7F, 211F),
     minQE = 704,
     maxQE = 1505,
@@ -122,8 +122,8 @@ val cup_bm21 = Gun ( // final
     spread = 2.02F
 )
 
-val cup_podnos_2b14 = Gun ( // final
-    name = "CUP Podnos 2B14",
+val cup_podnos = Gun ( // final
+    name = "CUP 2B14 Podnos",
     velocities = listOf (70F, 140F, 200F),
     minQE = 800,
     maxQE = 1511,
@@ -162,6 +162,46 @@ val cup_m252 = Gun ( // final
     spread = 0.95F
 )
 
+val rhs_m252 = Gun ( // final
+    name = "RHS M252",
+    velocities = listOf (40F, 80F, 120F, 160F, 200F),
+    minQE = 800,
+    maxQE = 1515,
+    spread = 1.07F,
+)
+
+val rhs_2s3m1 = Gun (
+    name = "RHS 2S3M1",
+    velocities = listOf (167.7F, 195.2F, 226.6F, 262.0F, 307.9F, 353.7F, 415.3F),
+    minQE = 350,
+    maxQE = 1193,
+    spread = 2.7F,
+)
+
+val rhs_m109a6 = Gun (
+    name = "RHS M109A6",
+    velocities = listOf (153.9F, 243.0F, 388.8F, 648.0F, 810.0F),
+    minQE = 350,
+    maxQE = 1422,
+    spread = 1.14F,
+)
+
+val rhs_m119a2 = Gun (
+    name = "RHS M119A2",
+    velocities = listOf (153.9F, 243.0F, 388.8F),
+    minQE = 350,
+    maxQE = 1422,
+    spread = 1.57F,
+)
+
+/*val mod_gun = Gun (
+    name =
+    velocities =
+    minQE =
+    maxQE =
+    spread =
+)*/
+
 val guns = listOf(
     cup_bm21,
     cup_d30,
@@ -170,13 +210,17 @@ val guns = listOf(
     cup_m119,
     cup_m252,
     cup_m270_he,
-    cup_podnos_2b14,
+    cup_podnos,
     cup_rm70,
     kamaz_mrl,
     mk6,
-    rhs_2s1,
-    rhs_d30a,
     rhs_podnos,
+    rhs_2s1,
+    rhs_2s3m1,
+    rhs_d30a,
+    rhs_m109a6,
+    rhs_m119a2,
+    rhs_m252,
     seara,
     sholef,
     sochor,

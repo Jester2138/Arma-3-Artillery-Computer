@@ -60,15 +60,15 @@ val cup_l16 = Gun (
 
 val sholef = Gun ( // final
     name = "Sholef",
-    velocities = listOf (153.9F, 388.8F, 648F, 810F),
+    velocities = listOf (153.9F, 243.0F, 388.8F, 648.0F, 810F),
     minQE = 350,
-    maxQE = 1420,
+    maxQE = 1448,
     spread = 1.62F
 )
 
 val sochor = Gun ( // final
     name = "Sochor",
-    velocities = listOf (153.9F, 388.8F, 648F, 810F),
+    velocities = listOf (153.9F, 243.0F, 388.8F, 648.0F, 810F),
     minQE = 350,
     maxQE = 1419,
     spread = 1.62F

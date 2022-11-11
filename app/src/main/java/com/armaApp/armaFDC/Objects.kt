@@ -2,7 +2,7 @@ package com.armaApp.armaFDC
 
 // solutions class
 class Solution (
-    val azimuth: Int,
+    //val azimuth: Int,
     val quadElev: Int,
     val charge: Int,
     val tof: Int,

@@ -81,7 +81,7 @@ fun DrawPointTargetUI () {
             // create variables
             var mapCorr: List<String>
             var gunType = rhs_2s1
-            var azimuth = 0
+            var azimuth: Int
             var range = 0
 
             // top row of buttons
@@ -357,14 +357,14 @@ fun DrawPointTargetUI () {
                     val tofHigh = getTOF(range = range, velocity = velocity, quadElev = quadElevHigh)
                     val tofLow = getTOF(range = range, velocity = velocity, quadElev = quadElevLow)
                     val solutionHigh = Solution(
-                        azimuth = azimuth,
+                        //azimuth = azimuth,
                         charge = i,
                         quadElev = quadElevHigh,
                         tof = tofHigh,
                         spread = (tofHigh * gunType.spread).toInt()
                     )
                     val solutionLow = Solution(
-                        azimuth = azimuth,
+                        //azimuth = azimuth,
                         charge = i,
                         quadElev = quadElevLow,
                         tof = tofLow,

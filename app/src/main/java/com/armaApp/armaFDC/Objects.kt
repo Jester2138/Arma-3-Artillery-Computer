@@ -194,6 +194,14 @@ val rhs_m119a2 = Gun (
     spread = 1.57F,
 )
 
+val jst_lefh18 = Gun (
+    name = "JST leFH18 10.5",
+    velocities = listOf (94.0F, 188.0F, 282.0F, 376.0F, 470.0F),
+    minQE = 350,
+    maxQE = 1549,
+    spread = 1.0F,
+)
+
 /*val mod_gun = Gun (
     name =
     velocities =
@@ -212,6 +220,7 @@ val guns = listOf(
     cup_m270_he,
     cup_podnos,
     cup_rm70,
+    jst_lefh18,
     kamaz_mrl,
     mk6,
     rhs_podnos,

@@ -30,13 +30,13 @@ fun getTOF (range: Int, velocity: Float, quadElev: Int): Int {
 }
 
 // find azimuth between point p and q
-fun getAzimuth (p: List<Float>, q: List<Float>): Float {
+fun getAzimuth (p: List<Float>, q: List<Float>): List<Float> {
     var azimuthDeg = (atan2(((q[0]-p[0]).toDouble()),((q[1]-p[1]).toDouble()))/Math.PI*180F).toFloat()
     if (azimuthDeg < 0F) {
         azimuthDeg += 360F
     }
     Log.i("Jesse", "getRange in p: $p q: $q")
-    return azimuthDeg/360F*6400F
+    return listOf(azimuthDeg, azimuthDeg/360F*6400F)
 }
 
 // find range between point p and q

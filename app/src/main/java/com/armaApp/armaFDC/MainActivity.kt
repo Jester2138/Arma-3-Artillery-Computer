@@ -28,6 +28,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.armaApp.armaFDC.ui.theme.ArtilleryComputer3Theme
 import kotlinx.coroutines.delay
+import java.lang.Math.round
+import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 
 // test comment
@@ -81,7 +83,7 @@ fun DrawPointTargetUI () {
             // create variables
             var mapCorr: List<String>
             var gunType = rhs_2s1
-            var azimuth: Int
+            var azimuthArr: List<Float>
             var range = 0
 
             // top row of buttons
@@ -310,9 +312,9 @@ fun DrawPointTargetUI () {
                     // if valid grid inputs
                     if ( ( gunGrid.count() == 2 ) && ( tgtGrid.count() == 2 ) ) {
                         Log.i("Jesse", "Valid grid: $gunGrid and $tgtGrid. Getting azimuth...")
-                        azimuth = (getAzimuth (gunGrid, tgtGrid)).toInt()
-                        Log.i("Jesse", "Azimuth: $azimuth")
-                        Text ( "Azimuth: $azimuth mils" )
+                        azimuthArr = getAzimuth(gunGrid, tgtGrid)
+                        Log.i("Jesse", "Azimuth: " + azimuthArr[1] + " mils / " + azimuthArr[0] + " degrees")
+                        Text ( "Azimuth: " + azimuthArr[1].roundToInt() + " mils / " + azimuthArr[0].roundToInt() + "°" )
                     } else { Text ("") }
                 }
                 Box(

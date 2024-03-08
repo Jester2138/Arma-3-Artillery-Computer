@@ -25,7 +25,7 @@ fun getQuadElevLow (range: Int, velocity: Float, elevDiff: Int): Int {
 
 // calc time of flight from range, velocity, and quadrant elevation in mils
 fun getTOF (range: Int, velocity: Float, quadElev: Int): Int {
-    Log.i("Jesse", "getTOF in range: $range velocity: $velocity quadElev: $quadElev")
+    Log.i("ArmaFDC", "getTOF in range: $range velocity: $velocity quadElev: $quadElev")
     return range / (velocity * cos((quadElev * 0.000982))).toInt()
 }
 
@@ -35,7 +35,7 @@ fun getAzimuth (p: List<Float>, q: List<Float>): List<Float> {
     if (azimuthDeg < 0F) {
         azimuthDeg += 360F
     }
-    Log.i("Jesse", "getRange in p: $p q: $q")
+    Log.i("ArmaFDC", "getRange in p: $p q: $q")
     return listOf(azimuthDeg, azimuthDeg/360F*6400F)
 }
 
@@ -43,7 +43,7 @@ fun getAzimuth (p: List<Float>, q: List<Float>): List<Float> {
 fun getRange (p: List<Float>, q: List<Float>): Float {
     val x1 = p[0]; val y1 = p[1]
     val x2 = q[0]; val y2 = q[1]
-    Log.i("Jesse", "getRange in p: $p q: $q")
+    Log.i("ArmaFDC", "getRange in p: $p q: $q")
     return sqrt(
         ((x2 - x1).pow(2) + (y2 - y1).pow(2))
     )
@@ -67,7 +67,7 @@ fun readGrid (x: String, y: String, k: String, mX: String, mY: String): List<Flo
             4 -> { gridOut.add(it.toFloat() * 10F) }
             5 -> { gridOut.add(it.toFloat()) }
             else -> {
-                Log.i("Jesse", "readGrid received invalid grid or map corr input.")
+                Log.i("ArmaFDC", "readGrid received invalid grid or map corr input.")
                 error = true
             }
         }
@@ -86,7 +86,7 @@ fun readGrid (x: String, y: String, k: String, mX: String, mY: String): List<Flo
             8F -> { gridOut[0] += 50F; gridOut[1] += 83F }
             9F -> { gridOut[0] += 83F; gridOut[1] += 83F }
             else -> {
-                Log.i("Jesse", "readGrid not adjusting for keypad.")
+                Log.i("ArmaFDC", "readGrid not adjusting for keypad.")
             }
         }
     }
@@ -95,11 +95,11 @@ fun readGrid (x: String, y: String, k: String, mX: String, mY: String): List<Flo
     if ( !error ) {
         if (gridOut[0] < gridOut[2]) {
             gridOut[0] += 100000F
-            Log.i("Jesse", "readGrid correcting X axis.")
+            Log.i("ArmaFDC", "readGrid correcting X axis.")
         }
         if (gridOut[1] < gridOut[3]) {
             gridOut[1] += 100000F
-            Log.i("Jesse", "readGrid correcting Y axis.")
+            Log.i("ArmaFDC", "readGrid correcting Y axis.")
         }
     }
 

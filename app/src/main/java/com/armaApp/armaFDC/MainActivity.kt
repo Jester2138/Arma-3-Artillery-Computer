@@ -112,7 +112,7 @@ fun DrawPointTargetUI () {
                 }
             }
 
-            Log.i("Jesse", "Map Correction Received: ($mX, $mY)")
+            Log.i("ArmaFDC", "Map Correction Received: ($mX, $mY)")
 
             // row of gun and map info
             Row {
@@ -306,15 +306,15 @@ fun DrawPointTargetUI () {
                         .fillMaxWidth(fraction = 0.5F)
                         .height(textLineHeight)
                 ) {
-                    Log.i("Jesse", "For azimuth, sending grids to readGrid: ($gX, $gY, $gK, $mX, $mY)")
+                    Log.i("ArmaFDC", "For azimuth, sending grids to readGrid: ($gX, $gY, $gK, $mX, $mY)")
                     val gunGrid = readGrid (gX, gY, gK, mX, mY)
                     val tgtGrid = readGrid (tX, tY, tK, mX, mY)
                     // if valid grid inputs
                     if ( ( gunGrid.count() == 2 ) && ( tgtGrid.count() == 2 ) ) {
-                        Log.i("Jesse", "Valid grid: $gunGrid and $tgtGrid. Getting azimuth...")
+                        Log.i("ArmaFDC", "Valid grid: $gunGrid and $tgtGrid. Getting azimuth...")
                         azimuthArr = getAzimuth(gunGrid, tgtGrid)
-                        Log.i("Jesse", "Azimuth: " + azimuthArr[1] + " mils / " + azimuthArr[0] + " degrees")
-                        Text ( "Azimuth: " + azimuthArr[1].roundToInt() + " mils / " + azimuthArr[0].roundToInt() + "°" )
+                        Log.i("ArmaFDC", "Azimuth: " + azimuthArr[1] + " mils / " + azimuthArr[0] + " degrees")
+                        Text ( "Az: " + azimuthArr[1].roundToInt() + " mils / " + azimuthArr[0].roundToInt() + "°" )
                     } else { Text ("") }
                 }
                 Box(
@@ -325,17 +325,17 @@ fun DrawPointTargetUI () {
                     contentAlignment = Alignment.TopEnd
                 )
                 {
-                    Log.i("Jesse", "For range, sending grids to readGrid: ($gX, $gY, $gK, $mX, $mY)")
+                    Log.i("ArmaFDC", "For range, sending grids to readGrid: ($gX, $gY, $gK, $mX, $mY)")
                     val gunGrid = readGrid (gX, gY, gK, mX, mY)
                     val tgtGrid = readGrid (tX, tY, tK, mX, mY)
                     // if valid grid inputs
                     if ( ( gunGrid.count() == 2 ) && ( tgtGrid.count() == 2 ) ) {
-                        Log.i("Jesse", "Valid grid: $gunGrid and $tgtGrid. Getting range...")
+                        Log.i("ArmaFDC", "Valid grid: $gunGrid and $tgtGrid. Getting range...")
                         range = (getRange (gunGrid, tgtGrid)).toInt()
-                        Log.i("Jesse", "Range: $range")
-                        Text ("Range: $range m")
+                        Log.i("ArmaFDC", "Range: $range")
+                        Text ("Rng: $range m")
                     } else {
-                        Log.i("Jesse", "Invalid grid.")
+                        Log.i("ArmaFDC", "Invalid grid.")
                         Text ("")
                     }
                 }
@@ -377,11 +377,11 @@ fun DrawPointTargetUI () {
                     val elevLow = solutionLow.quadElev
                     if (solutionHigh.quadElev in gunType.minQE..gunType.maxQE) {
                         solutions.add(solutionHigh)
-                        Log.i("Jesse", "$gunName Solution High: $elevHigh")
+                        Log.i("ArmaFDC", "$gunName Solution High: $elevHigh")
                     }
                     if (solutionLow.quadElev in gunType.minQE..gunType.maxQE) {
                         solutions.add(solutionLow)
-                        Log.i("Jesse", "$gunName Solution Low: $elevLow")
+                        Log.i("ArmaFDC", "$gunName Solution Low: $elevLow")
                     }
                 }
 
@@ -411,7 +411,7 @@ fun ShotButton(tti: Int) {
     Button(
         onClick = {
             counting.value = !counting.value
-            Log.i("Jesse", "Timer started...")
+            Log.i("ArmaFDC", "Timer started...")
         }
     ) {
         Text(
@@ -422,7 +422,7 @@ fun ShotButton(tti: Int) {
     }
     if (counting.value) {
         LaunchedEffect(Unit) {
-            Log.i("Jesse", "Changing button color to red.")
+            Log.i("ArmaFDC", "Changing button color to red.")
             color = Color.Red
             // text only seems to change color when the text changes. need a better way...
             ttiHere += 1
@@ -431,7 +431,7 @@ fun ShotButton(tti: Int) {
             while ((ttiHere > 0) && counting.value) {
                 delay(1.seconds)
                 ttiHere -= 1
-                Log.i("Jesse", "Timer seconds left: $ttiHere")
+                Log.i("ArmaFDC", "Timer seconds left: $ttiHere")
             }
             counting.value = false
             ttiHere = tti
@@ -439,7 +439,7 @@ fun ShotButton(tti: Int) {
     } else {
         color = MaterialTheme.colors.onPrimary
         ttiHere = tti
-        Log.i("Jesse", "Timer resetting")
+        Log.i("ArmaFDC", "Timer resetting")
     }
 }
 /*
@@ -474,7 +474,7 @@ fun TimerButton() {
             }
         }
     }
-    Log.i("Jesse", "Timer button opened.")
+    Log.i("ArmaFDC", "Timer button opened.")
 }
 */
 @Composable
@@ -529,7 +529,7 @@ fun HelpButton() {
             }
         }
     }
-    Log.i("Jesse", "Help button opened.")
+    Log.i("ArmaFDC", "Help button opened.")
 }
 
 @Composable
@@ -591,7 +591,7 @@ fun mapCorrPopup(mX: String, mY: String): List<String> {
             }
         }
     }
-    Log.i("Jesse", "Map Correction Input: ($mX, $mY)")
+    Log.i("ArmaFDC", "Map Correction Input: ($mX, $mY)")
     return listOf(
         (mXNew.ifEmpty { "000" }),
         (mYNew.ifEmpty { "000" })
@@ -715,8 +715,8 @@ fun RowScope.TableCell(
 @Composable
 fun tableScreen(solutions: List<Solution>, activeIndex: Int): Int {
 
-    Log.i("Jesse", "Data Table solutions: " + solutions.count().toString())
-    Log.i("Jesse", "Data Table fed active index: $activeIndex")
+    Log.i("ArmaFDC", "Data Table solutions: " + solutions.count().toString())
+    Log.i("ArmaFDC", "Data Table fed active index: $activeIndex")
 
     // receive active solution
     var oldActiveIndex = activeIndex
@@ -751,7 +751,7 @@ fun tableScreen(solutions: List<Solution>, activeIndex: Int): Int {
 
             // Iterate through given data creating rows
             for ((index, value) in solutions.withIndex()) {
-                Log.i("Jesse", "Data Table active loop index: $index")
+                Log.i("ArmaFDC", "Data Table active loop index: $index")
                 Divider(
                     thickness = 1.dp,
                     color = MaterialTheme.colors.onBackground
@@ -762,7 +762,7 @@ fun tableScreen(solutions: List<Solution>, activeIndex: Int): Int {
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onTap = {
-                                    Log.i("Jesse", "Data Table tapped row: $index")
+                                    Log.i("ArmaFDC", "Data Table tapped row: $index")
                                     newActiveIndex = index
                                 }
                             )
